@@ -178,7 +178,7 @@ public class LiftPlatesPlugin {
                 .build(), "lslifts");
 
         liftRunner = new LiftRunner(this);
-        game.getScheduler().getTaskBuilder()
+        game.getScheduler().createTaskBuilder()
                 .execute(liftRunner)
                 .delay(LiftRunner.RUN_FREQUENCY)
                 .interval(LiftRunner.RUN_FREQUENCY)

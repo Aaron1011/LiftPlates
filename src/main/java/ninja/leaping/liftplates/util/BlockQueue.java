@@ -5,11 +5,7 @@ import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.block.BlockTypes;
-import org.spongepowered.api.block.tileentity.TileEntity;
-import org.spongepowered.api.block.tileentity.carrier.Chest;
-import org.spongepowered.api.block.tileentity.carrier.TileEntityCarrier;
-import org.spongepowered.api.data.manipulator.block.AttachedData;
-import org.spongepowered.api.item.inventory.Carrier;
+import org.spongepowered.api.data.manipulator.immutable.block.ImmutableAttachedData;
 import org.spongepowered.api.world.World;
 
 import java.util.ArrayList;
@@ -131,7 +127,7 @@ public class BlockQueue {
      * @return Whether an attachment is required
      */
     private static boolean needsSideAttachment(BlockState data) {
-        return data.getManipulator(AttachedData.class).isPresent()
+        return (data.get(ImmutableAttachedData.class).isPresent() && data.get(ImmutableAttachedData.class).get().attached().get())
                 || data.getType() == BlockTypes.PISTON;
     }
 

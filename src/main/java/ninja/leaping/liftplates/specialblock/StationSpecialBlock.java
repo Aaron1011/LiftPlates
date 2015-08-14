@@ -37,7 +37,7 @@ public class StationSpecialBlock extends SpecialBlock {
         if (!activeBlocks.contains(block)) {
             activeBlocks.add(block);
             CallLift call = new CallLift(block, lift);
-            call.task = lift.getPlugin().getGame().getScheduler().getTaskBuilder()
+            call.task = lift.getPlugin().getGame().getScheduler().createTaskBuilder()
                     .execute(call)
                     .interval(LiftRunner.RUN_FREQUENCY)
                     .submit(lift.getPlugin());

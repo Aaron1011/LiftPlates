@@ -6,7 +6,7 @@ import ninja.leaping.liftplates.specialblock.SpecialBlockRegisterEvent;
 import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.block.tileentity.Sign;
 import org.spongepowered.api.block.tileentity.TileEntity;
-import org.spongepowered.api.data.manipulator.tileentity.SignData;
+import org.spongepowered.api.data.manipulator.mutable.tileentity.SignData;
 import org.spongepowered.api.entity.EntityInteractionTypes;
 import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.Subscribe;
@@ -36,12 +36,12 @@ public class LiftPlatesListener {
     @Subscribe
     public void onPressPlate(PlayerInteractBlockEvent event) {
         if (event.getInteractionType() == EntityInteractionTypes.USE) {
-            Optional<TileEntity> state = event.getBlock().getTileEntity();
+            Optional<TileEntity> state = event.getLocation().getTileEntity();
             if (state.isPresent() && state.get() instanceof Sign) {
                 Sign sign = (Sign) state.get();
                 Optional<SignData> data = sign.getData();
                 if (data.isPresent()) {
-                    Matcher match = LIFT_SIGN_PATTERN.matcher(Texts.toPlain(data.get().getLine(0)));
+                    Matcher match = LIFT_SIGN_PATTERN.matcher(Texts.toPlain(data.get().lines().get(0)));
                     if (match.matches()) {
                         final String action = match.group(1);
                         // TODO: Handle lift signs if I still want to use them
@@ -53,12 +53,12 @@ public class LiftPlatesListener {
 
     @Subscribe(order = Order.LAST)
     public void onBlockBreak(PlayerBreakBlockEvent event) {
-        final Location block = event.getBlock();
+        final Location block = event.getLocation();
         if (plugin.getLiftManager(block.getExtent()).getLift(block) != null) {
             plugin.getLiftManager(block.getExtent()).removeLift(block.getBlockPosition());
         } else {
             final Vector3i above = block.getPosition().add(Direction.UP.toVector3d()).toInt();
-            plugin.getGame().getScheduler().getTaskBuilder().delay(1L).execute(new Runnable() {
+            plugin.getGame().getScheduler().createTaskBuilder().delay(1L).execute(new Runnable() {
                 public void run() {
                     if (block.getExtent().getBlockType(above) == BlockTypes.AIR &&
                             plugin.getLiftManager(block.getExtent()).getLift(above) != null) {
@@ -84,9 +84,9 @@ public class LiftPlatesListener {
 
     @Subscribe
     public void onPlateToggle(BlockRedstoneUpdateEvent event) {
-        if (LiftUtil.isPressurePlate(event.getBlock().getBlockType())) {
+        if (LiftUtil.isPressurePlate(event.getBlock().getType())) {
             if (event.getNewSignalStrength() > 0 && event.getOldSignalStrength() == 0) { // Turning on
-                plugin.getLiftRunner().plateTriggered(event.getBlock());
+                plugin.getLiftRunner().plateTriggered(event.getLocation());
             }
         }
     }

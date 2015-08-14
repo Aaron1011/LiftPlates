@@ -1,7 +1,7 @@
 package ninja.leaping.liftplates;
 
 import ninja.leaping.liftplates.specialblock.SpecialBlock;
-import org.spongepowered.api.data.manipulator.block.PoweredData;
+import org.spongepowered.api.data.manipulator.mutable.block.PoweredData;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.util.Direction;
@@ -85,7 +85,7 @@ public class LiftRunner implements Runnable {
         for (Iterator<Location> i = triggeredPoints.iterator(); i.hasNext();) {
             boolean triggered = false;
             Location point = i.next();
-            if (!point.getData(PoweredData.class).isPresent()) {
+            if (!(point.get(PoweredData.class).isPresent() && point.get(PoweredData.class).get().powered().get())) {
                 i.remove();
                 continue;
             }

@@ -8,7 +8,9 @@ import ninja.leaping.liftplates.util.IntPairKey;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.block.BlockTypes;
-import org.spongepowered.api.data.manipulator.block.PoweredData;
+import org.spongepowered.api.data.key.Keys;
+import org.spongepowered.api.data.manipulator.immutable.block.ImmutablePoweredData;
+import org.spongepowered.api.data.manipulator.mutable.block.PoweredData;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.util.Direction;
 import org.spongepowered.api.world.Chunk;
@@ -150,10 +152,9 @@ public class LiftContents {
                 if (LiftUtil.isPressurePlate(input.getType())
                         || input.getType() == BlockTypes.STONE_BUTTON
                         || input.getType() == BlockTypes.WOODEN_BUTTON) {
-                    input = input.withoutData(PoweredData.class).or(input);
+                    input = input.with(Keys.POWERED, false).or(input);
                 } else if (input.getType() == BlockTypes.REDSTONE_TORCH) {
-                    input = input.withData(lift.getPlugin().getGame().getRegistry().getManipulatorRegistry().getBuilder(PoweredData.class).get()
-                            .create()).or(input);
+                    input = input.with(Keys.POWERED, false).or(input);
                 }
                 return super.modifyBlockState(input);
             }
